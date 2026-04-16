@@ -111,10 +111,13 @@ const Navbar = ({ onSearch, onSearchCommit, role, toggleRole, darkMode, toggleDa
         {/* Dark Mode Toggle */}
         <button 
           onClick={toggleDarkMode}
-          className="nav-icon-btn"
+          className={`apple-toggle ${darkMode ? 'active' : ''}`}
           title={darkMode ? 'מצב יום' : 'מצב לילה'}
+          type="button"
         >
-          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          <div className="toggle-thumb">
+            {darkMode ? <Moon size={14} color="#09090B" /> : <Sun size={14} color="#F59E0B" />}
+          </div>
         </button>
       </div>
     </nav>

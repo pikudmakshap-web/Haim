@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronLeft, Building2, User, LayoutGrid, Plus } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Building2, User, LayoutGrid, Plus, SearchX } from 'lucide-react';
 
 const TreeNode = ({ node, level = 0, onSelect, selectedId, expandedPaths = [], isAdmin, onCreate, currentPath = [] }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -134,7 +134,7 @@ const Sidebar = ({ data, onSelectManager, selectedManagerId, expandedPaths, isAd
       </div>
 
       <div className="tree-container">
-        {data && (
+        {data ? (
           <TreeNode
             node={data}
             onSelect={onSelectManager}
@@ -143,6 +143,12 @@ const Sidebar = ({ data, onSelectManager, selectedManagerId, expandedPaths, isAd
             isAdmin={isAdmin}
             onCreate={onCreate}
           />
+        ) : (
+          <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--text-muted)', animation: 'fadeIn 0.3s' }}>
+            <SearchX size={48} style={{ opacity: 0.15, margin: '0 auto 16px', display: 'block' }} />
+            <p style={{ fontSize: '1rem', fontWeight: '700' }}>לא נמצאו תוצאות</p>
+            <p style={{ fontSize: '0.85rem', marginTop: '6px', opacity: 0.8 }}>בדוק את שורת החיפוש או נסה שם אחר</p>
+          </div>
         )}
       </div>
     </aside>

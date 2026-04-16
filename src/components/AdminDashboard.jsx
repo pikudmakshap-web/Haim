@@ -9,11 +9,16 @@ import {
   ChevronUp,
   LayoutGrid,
   BarChart3,
-  UserPlus
+  UserPlus,
+  Activity,
+  ArrowRightLeft,
+  Plus,
+  Edit2,
+  Clock
 } from 'lucide-react';
 import { getManagers } from '../utils/treeUtils';
 
-const AdminDashboard = ({ treeData, onManageAdmins }) => {
+const AdminDashboard = ({ treeData, onManageAdmins, activityLog = [] }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSku, setExpandedSku] = useState(null);
 
@@ -132,9 +137,10 @@ const AdminDashboard = ({ treeData, onManageAdmins }) => {
         />
       </div>
 
-      {/* Main Inventory Section */}
-      <div className="dashboard-table-container">
-        <div className="admin-search-container">
+      {/* Main Inventory Section & Timeline */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 380px', gap: '24px' }}>
+        <div className="dashboard-table-container">
+          <div className="admin-search-container">
           <h2 style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.25rem', fontWeight: '800' }}>
             <LayoutGrid size={22} color="var(--accent)" />
             ריכוז מלאי גלובלי
@@ -156,10 +162,10 @@ const AdminDashboard = ({ treeData, onManageAdmins }) => {
           </div>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
+        <div className="dashboard-table-wrapper">
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
             <thead>
-              <tr style={{ background: 'var(--bg-secondary)', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+              <tr style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                 <th style={{ padding: '16px 24px' }}>מק&quot;ט</th>
                 <th style={{ padding: '16px 24px' }}>שם מוצר</th>
                 <th style={{ padding: '16px 24px', textAlign: 'center' }}>כמות כוללת</th>
@@ -235,7 +241,51 @@ const AdminDashboard = ({ treeData, onManageAdmins }) => {
           </table>
         </div>
       </div>
+
+      {/* Activity Timeline (Right Column) */}
+      <div className="activity-timeline-container">
+        <div className="timeline-header">
+          <Activity size={22} color="var(--accent)" />
+          פעולות אחרונות בתערכת
+        </div>
+        
+        <div className="timeline-list">
+          {activityLog.length > 0 ? activityLog.slice(0, 15).map((log) => {
+            const timeStr = new Date(log.timestamp).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+            
+            let IconObj = Plus;
+            let iconColor = 'var(--success)';
+            let bgColor = 'rgba(16, 185, 129, 0.1)';
+            
+            if (log.type === 'MOVE') { IconObj = ArrowRightLeft; iconColor = '#3b82f6'; bgColor = 'rgba(59, 130, 246, 0.1)'; }
+            else if (log.type === 'EDIT') { IconObj = Edit2; iconColor = '#f59e0b'; bgColor = 'rgba(245, 158, 11, 0.1)'; }
+            else if (log.type === 'ADD_OFFICE') { IconObj = LayoutGrid; iconColor = '#8b5cf6'; bgColor = 'rgba(139, 92, 246, 0.1)'; }
+
+            return (
+              <div key={log.id} className="timeline-item animate-fade">
+                <div className="timeline-icon" style={{ background: bgColor, color: iconColor }}>
+                  <IconObj size={20} />
+                </div>
+                <div className="timeline-content">
+                  <div className="timeline-time">
+                    <Clock size={12} />
+                    {timeStr}
+                  </div>
+                  <div className="timeline-manager">{log.managerName}</div>
+                  <div className="timeline-desc">{log.description}</div>
+                </div>
+              </div>
+            );
+          }) : (
+            <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-muted)' }}>
+              <Activity size={32} style={{ opacity: 0.2, margin: '0 auto 12px' }} />
+              <p>טרם נרשמו פעולות</p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
+  </div>
   );
 };
 

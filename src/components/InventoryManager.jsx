@@ -16,15 +16,16 @@ import {
 import { closestCorners } from '@dnd-kit/core';
 import OfficeTable from './OfficeTable';
 import MoveItemModal from './MoveItemModal';
-import { ChevronRight, FileOutput, Filter, PlusCircle, Search, LayoutGrid } from 'lucide-react';
+import { ChevronRight, FileOutput, Filter, PlusCircle, Search, LayoutGrid, CheckCircle2 } from 'lucide-react';
 
-const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] }) => {
+const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [], onLogActivity }) => {
   const [activeId, setActiveId] = React.useState(null);
   const [addingOffice, setAddingOffice] = React.useState(false);
   const [newOfficeName, setNewOfficeName] = React.useState('');
   const [showSortOptions, setShowSortOptions] = React.useState(false);
   const [officeSearchQuery, setOfficeSearchQuery] = React.useState('');
   const [moveModalData, setMoveModalData] = React.useState(null);
+  const [notification, setNotification] = React.useState(null);
   
   const sortRef = React.useRef(null);
 
@@ -156,9 +157,16 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
       
       return office;
     });
-
     onUpdateManager({ ...manager, offices: newOffices });
+    
+    // Log the move activity
+    if (onLogActivity) {
+      onLogActivity('MOVE', `העביר ${quantity} יחידות של "${activeItem.name}" ממשרד "${fromOffice.name}" ל-"${toOffice.name}"`);
+    }
+
     setMoveModalData(null);
+    setNotification('ההעברה בוצעה בהצלחה!');
+    setTimeout(() => setNotification(null), 3000);
   };
 
   const handleEditItem = (officeId, updatedItem) => {
@@ -170,6 +178,7 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
       };
     });
     onUpdateManager({ ...manager, offices: newOffices });
+    if (onLogActivity) onLogActivity('EDIT', `ערך את הפריט "${updatedItem.name}"`);
   };
 
   const handleAddItem = (officeId, newItem) => {
@@ -182,6 +191,7 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
       };
     });
     onUpdateManager({ ...manager, offices: newOffices });
+    if (onLogActivity) onLogActivity('ADD', `הוסיף פריט חדש "${newItem.name}" (${newItem.count} יח')`);
   };
 
   const handleExport = () => {
@@ -246,12 +256,12 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
             </div>
           )) : null}
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+          <div style={{ minWidth: '240px' }}>
             <h1 style={{ fontSize: '2rem', fontWeight: '800' }}>ניהול מלאי: {manager.name}</h1>
             <p style={{ color: 'var(--text-secondary)' }}>צפייה ועריכת פריטי מלאי לפי משרדים</p>
           </div>
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             {/* Office Search */}
             <div style={{ 
               position: 'relative',
@@ -287,13 +297,11 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
 
             <div style={{ position: 'relative' }} ref={sortRef}>
               <button 
+                className="btn-secondary"
                 onClick={() => setShowSortOptions(!showSortOptions)}
                 style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
-                  padding: '10px 20px', borderRadius: '10px',
-                  border: '1px solid var(--border)', color: 'var(--text-primary)',
-                  background: 'var(--bg-secondary)',
-                  cursor: 'pointer'
+                  padding: '10px 20px', cursor: 'pointer'
                 }}
               >
                 <Filter size={18} />
@@ -314,12 +322,13 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
             </div>
 
             <button 
+              className="btn-secondary"
               onClick={handleExport}
               style={{
                 display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '10px 20px', borderRadius: '10px',
-                background: 'var(--accent)', color: 'white',
-                border: 'none', cursor: 'pointer'
+                padding: '10px 20px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap', flexShrink: 0,
               }}
             >
               <FileOutput size={18} />
@@ -332,12 +341,11 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
       {/* Totals Summary Table — READ ONLY */}
       <div style={{ 
         marginBottom: '40px',
-        background: 'var(--bg-surface)',
+        background: 'var(--bg-hover)',
         borderRadius: 'var(--radius-md)',
-        border: '1px solid var(--accent)',
+        border: '1px solid var(--border)',
         padding: '24px',
-        boxShadow: 'var(--shadow)',
-        borderRightWidth: '4px' // Highlight as summary
+        boxShadow: 'none',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
           <LayoutGrid size={22} color="var(--accent)" />
@@ -424,14 +432,16 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
               onKeyDown={e => {
                 if (e.key === 'Enter') {
                   if (!newOfficeName.trim()) return;
+                  const newName = newOfficeName.trim();
                   onUpdateManager({
                     ...manager,
                     offices: [...manager.offices, {
                       id: `office-${Date.now()}`,
-                      name: newOfficeName.trim(),
+                      name: newName,
                       items: []
                     }]
                   });
+                  if (onLogActivity) onLogActivity('ADD_OFFICE', `יצר משרד/חדר חדש: "${newName}"`);
                   setNewOfficeName('');
                   setAddingOffice(false);
                 }
@@ -439,7 +449,7 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
               }}
               style={{
                 flex: 1, padding: '12px 16px', borderRadius: '10px',
-                border: '1px solid var(--border)', background: 'white',
+                border: '1px solid var(--border)', background: 'var(--bg-secondary)',
                 fontFamily: 'inherit', fontSize: '1rem',
               }}
             />
@@ -448,14 +458,16 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
               style={{ padding: '12px 20px' }}
               onClick={() => {
                 if (!newOfficeName.trim()) return;
+                const newName = newOfficeName.trim();
                 onUpdateManager({
                   ...manager,
                   offices: [...manager.offices, {
                     id: `office-${Date.now()}`,
-                    name: newOfficeName.trim(),
+                    name: newName,
                     items: []
                   }]
                 });
+                if (onLogActivity) onLogActivity('ADD_OFFICE', `יצר משרד/חדר חדש: "${newName}"`);
                 setNewOfficeName('');
                 setAddingOffice(false);
               }}
@@ -519,6 +531,29 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
           onConfirm={handleConfirmMove}
           onCancel={() => setMoveModalData(null)}
         />
+      )}
+
+      {notification && (
+        <div style={{
+          position: 'fixed',
+          bottom: '32px',
+          left: '32px',
+          background: 'var(--success)',
+          color: '#ffffff',
+          padding: '14px 24px',
+          borderRadius: 'var(--radius-md)',
+          boxShadow: '0 8px 16px rgba(16, 185, 129, 0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          zIndex: 9999,
+          animation: 'slideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28)',
+          fontWeight: '600',
+          fontSize: '0.95rem'
+        }}>
+          <CheckCircle2 size={20} />
+          {notification}
+        </div>
       )}
     </div>
   );

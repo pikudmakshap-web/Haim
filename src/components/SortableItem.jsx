@@ -132,7 +132,7 @@ const editInputStyle = {
   padding: '6px 10px',
   borderRadius: '6px',
   border: '1px solid var(--accent)',
-  background: 'white',
+  background: 'var(--bg-secondary)',
   fontFamily: 'inherit',
   fontSize: '0.9rem',
 };

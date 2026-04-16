@@ -6,6 +6,7 @@ import { initialData } from './data/initialData';
 import { findPath, updateNode, findNode, getPrunedTree, getAllManagers, getSearchTree } from './utils/treeUtils';
 import CreateNodeModal from './components/CreateNodeModal';
 import AdminDashboard from './components/AdminDashboard';
+import ManageAdminsModal from './components/ManageAdminsModal';
 import './index.css';
 
 function App() {
@@ -20,6 +21,11 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTarget, setModalTarget] = useState(null);
   const [currentView, setCurrentView] = useState('tree');
+  const [isManageAdminsOpen, setIsManageAdminsOpen] = useState(false);
+  const [systemAdmins, setSystemAdmins] = useState([
+    { id: 'admin-1', name: 'מנהל ראשי', email: 'admin@haim.local', role: 'Super Admin' }
+  ]);
+  const [activityLog, setActivityLog] = useState([]);
 
   useEffect(() => {
     if (darkMode) {
@@ -38,12 +44,29 @@ function App() {
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
   const handleAddAdmin = () => {
-    // Placeholder for adding admin logic
-    alert('פתיחת ממשק להוספת מנהל מערכת חדש...');
+    setIsManageAdminsOpen(true);
+  };
+
+  const handleAddSystemAdmin = (newAdmin) => {
+    setSystemAdmins(prev => [...prev, newAdmin]);
+  };
+
+  const handleRemoveSystemAdmin = (id) => {
+    setSystemAdmins(prev => prev.filter(a => a.id !== id));
   };
 
   const handleGoHome = () => {
     setCurrentView('tree');
+  };
+
+  const handleLogActivity = (managerName, type, description) => {
+    setActivityLog(prev => [{
+      id: `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: Date.now(),
+      managerName,
+      type,
+      description
+    }, ...prev]);
   };
 
   const handleSearch = (query) => {
@@ -124,9 +147,10 @@ function App() {
     // Admin mode with active search: show filtered tree
     if (role === 'admin' && activeSearch) {
       const paths = findPath(treeData, activeSearch);
+      if (paths.length === 0) return null;
       const matchingIds = new Set(paths.map(p => p[p.length - 1])); // leaf IDs of each path
       const filtered = getSearchTree(treeData, matchingIds);
-      return filtered || treeData;
+      return filtered;
     }
     return treeData;
   }, [role, treeData, selectedManager, activeSearch]);
@@ -136,7 +160,13 @@ function App() {
       const paths = findPath(treeData, selectedManager.id);
       return [...new Set(paths.flat())];
     }
-    return expandedPaths;
+    
+    let adminExpanded = [...expandedPaths];
+    if (selectedManager) {
+      const paths = findPath(treeData, selectedManager.id);
+      adminExpanded = [...adminExpanded, ...paths.flat()];
+    }
+    return [...new Set(adminExpanded)];
   }, [role, selectedManager, expandedPaths, treeData]);
 
   // The breadcrumb is simply the path captured at click time — always one path
@@ -178,6 +208,7 @@ function App() {
               isAdmin={role === 'admin'}
               onUpdateManager={handleUpdateManagerData}
               breadcrumbs={managerBreadcrumbs}
+              onLogActivity={(type, desc) => handleLogActivity(selectedManager?.name || 'מנהל', type, desc)}
             />
           </main>
         </>
@@ -186,7 +217,11 @@ function App() {
           className="main-content"
           style={{ gridColumn: '1 / -1', width: '100%', padding: '40px' }}
         >
-          <AdminDashboard treeData={treeData} onManageAdmins={handleAddAdmin} />
+          <AdminDashboard 
+            treeData={treeData} 
+            onManageAdmins={handleAddAdmin} 
+            activityLog={activityLog}
+          />
         </main>
       )}
 
@@ -196,6 +231,14 @@ function App() {
         onCreate={handlePerformCreate}
         parentNode={modalTarget}
         existingManagers={getAllManagers(treeData)}
+      />
+
+      <ManageAdminsModal 
+        isOpen={isManageAdminsOpen}
+        onClose={() => setIsManageAdminsOpen(false)}
+        systemAdmins={systemAdmins}
+        onAddAdmin={handleAddSystemAdmin}
+        onRemoveAdmin={handleRemoveSystemAdmin}
       />
     </div>
   );

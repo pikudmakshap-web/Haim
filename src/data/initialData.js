@@ -15,7 +15,7 @@ export const initialData = {
           children: [
             {
               id: 'manager-101',
-              name: 'אבי כהן',
+              name: 'משה כהן',
               type: 'manager',
               offices: [
                 {
@@ -27,6 +27,8 @@ export const initialData = {
                     { id: 'item-3', name: 'נייר מדפסת A4 (חבילה)', sku: 'SKU-5541#', count: 15 },
                     { id: 'item-101', name: 'טלפון IP Cisco', sku: 'SKU-8811#', count: 3 },
                     { id: 'item-102', name: 'מגרסת נייר משרדית', sku: 'SKU-4400#', count: 1 },
+                    { id: 'item-new-1', name: 'כיסא ארגונומי Herman Miller', sku: 'SKU-HM-01#', count: 2 },
+                    { id: 'item-new-3', name: 'מחשב נייד MacBook Pro M3', sku: 'SKU-MBP-01#', count: 1 },
                   ]
                 },
                 {
@@ -60,6 +62,7 @@ export const initialData = {
                     { id: 'item-9', name: 'כרטיס רשת סיב אופטי', sku: 'SKU-8822#', count: 10 },
                     { id: 'item-301', name: 'מלחם מקצועי Weller', sku: 'SKU-7711#', count: 2 },
                     { id: 'item-302', name: 'מולטימטר דיגיטלי', sku: 'SKU-5566#', count: 4 },
+                    { id: 'item-new-2', name: 'מחשב נייד MacBook Pro M3', sku: 'SKU-MBP-01#', count: 1 },
                   ]
                 },
                 {
@@ -87,8 +90,8 @@ export const initialData = {
           type: 'unit',
           children: [
             {
-              id: 'manager-101', // SHARED MANAGER (Avi Cohen)
-              name: 'אבי כהן',
+              id: 'manager-101', // SHARED MANAGER (Moshe Cohen)
+              name: 'משה כהן',
               type: 'manager',
               offices: [
                 {

@@ -14,12 +14,12 @@ const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
     <div ref={setNodeRef} className="office-card" style={{
       background: 'var(--bg-surface)',
       borderRadius: 'var(--radius-md)',
-      border: isOver ? '2px solid var(--accent)' : '1px solid var(--border)',
+      border: isOver ? '2px dashed var(--accent)' : '1px solid var(--border)',
       marginBottom: '24px',
       overflow: 'hidden',
-      boxShadow: isOver ? '0 0 20px rgba(var(--accent-rgb), 0.3)' : 'var(--shadow)',
+      boxShadow: 'var(--shadow)',
       transition: 'all 0.2s ease',
-      transform: isOver ? 'scale(1.02)' : 'scale(1)',
+      transform: 'none',
       zIndex: isOver ? 10 : 1,
     }}>
       {/* Header */}
@@ -35,7 +35,7 @@ const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
       }} onClick={() => setIsOpen(v => !v)}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
-            background: 'white',
+            background: 'var(--bg-secondary)',
             padding: '10px',
             borderRadius: '12px',
             color: 'var(--accent)',
@@ -64,106 +64,110 @@ const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
 
       {/* Collapsible body */}
       {isOpen && (
-        <div style={{ padding: '0 24px 16px' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
-            <thead>
-              <tr style={{ color: 'var(--text-muted)', fontSize: '0.8rem', borderBottom: '1px solid var(--border)' }}>
-                <th style={{ padding: '16px 8px', fontWeight: '500' }}>מק&quot;ט</th>
-                <th style={{ padding: '16px 8px', fontWeight: '500' }}>שם מוצר</th>
-                <th style={{ padding: '16px 8px', fontWeight: '500' }}>כמות</th>
-                {isAdmin && <th style={{ padding: '16px 8px', fontWeight: '500', textAlign: 'left', width: '40px' }}></th>}
-              </tr>
-            </thead>
-            <tbody>
-              <SortableContext items={office.items.map(i => i.id)} strategy={verticalListSortingStrategy}>
-                {office.items.map((item) => (
-                  <SortableItem
-                    key={item.id}
-                    item={item}
-                    isAdmin={isAdmin}
-                    onEdit={(updated) => onEditItem(office.id, updated)}
-                  />
-                ))}
-              </SortableContext>
-
-              {isAdding && (
-                <tr style={{ background: 'rgba(var(--accent-rgb), 0.05)' }}>
-                  <td style={{ padding: '8px' }}>
-                    <input
-                      placeholder='מק"ט'
-                      value={newItem.sku}
-                      onChange={e => setNewItem({ ...newItem, sku: e.target.value })}
-                      style={inlineInputStyle}
-                    />
-                  </td>
-                  <td style={{ padding: '8px' }}>
-                    <input
-                      autoFocus
-                      placeholder="שם מוצר"
-                      value={newItem.name}
-                      onChange={e => setNewItem({ ...newItem, name: e.target.value })}
-                      style={{ ...inlineInputStyle, width: '100%' }}
-                    />
-                  </td>
-                  <td style={{ padding: '8px' }}>
-                    <input
-                      type="number"
-                      placeholder="כמות"
-                      value={newItem.count}
-                      onChange={e => setNewItem({ ...newItem, count: parseInt(e.target.value) || 0 })}
-                      style={{ ...inlineInputStyle, width: '60px' }}
-                    />
-                  </td>
-                  <td style={{ padding: '8px', textAlign: 'left' }}>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button 
-                        onClick={() => {
-                          if (!newItem.name || !newItem.sku) return;
-                          onAddItem(office.id, { ...newItem, id: `item-${Date.now()}` });
-                          setNewItem({ name: '', sku: '', count: 1 });
-                          setIsAdding(false);
-                        }}
-                        style={{ color: 'var(--success)', padding: '4px 8px', borderRadius: '6px' }}
-                        title="שמור"
-                      >
-                        <Check size={18} />
-                      </button>
-                      <button 
-                        onClick={() => setIsAdding(false)}
-                        style={{ color: 'var(--danger)', padding: '4px 8px', borderRadius: '6px' }}
-                        title="ביטול"
-                      >
-                        <X size={18} />
-                      </button>
-                    </div>
-                  </td>
+        <div style={{ paddingBottom: '16px' }}>
+          <div className="office-table-wrapper" style={{ padding: '0 24px' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
+              <thead>
+                <tr style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                  <th style={{ padding: '16px 8px', fontWeight: '500' }}>מק&quot;ט</th>
+                  <th style={{ padding: '16px 8px', fontWeight: '500' }}>שם מוצר</th>
+                  <th style={{ padding: '16px 8px', fontWeight: '500' }}>כמות</th>
+                  {isAdmin && <th style={{ padding: '16px 8px', fontWeight: '500', textAlign: 'left', width: '40px' }}></th>}
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                <SortableContext items={office.items.map(i => i.id)} strategy={verticalListSortingStrategy}>
+                  {office.items.map((item) => (
+                    <SortableItem
+                      key={item.id}
+                      item={item}
+                      isAdmin={isAdmin}
+                      onEdit={(updated) => onEditItem(office.id, updated)}
+                    />
+                  ))}
+                </SortableContext>
+
+                {isAdding && (
+                  <tr style={{ background: 'rgba(var(--accent-rgb), 0.05)' }}>
+                    <td style={{ padding: '8px' }}>
+                      <input
+                        placeholder='מק"ט'
+                        value={newItem.sku}
+                        onChange={e => setNewItem({ ...newItem, sku: e.target.value })}
+                        style={inlineInputStyle}
+                      />
+                    </td>
+                    <td style={{ padding: '8px' }}>
+                      <input
+                        autoFocus
+                        placeholder="שם מוצר"
+                        value={newItem.name}
+                        onChange={e => setNewItem({ ...newItem, name: e.target.value })}
+                        style={{ ...inlineInputStyle, width: '100%' }}
+                      />
+                    </td>
+                    <td style={{ padding: '8px' }}>
+                      <input
+                        type="number"
+                        placeholder="כמות"
+                        value={newItem.count}
+                        onChange={e => setNewItem({ ...newItem, count: parseInt(e.target.value) || 0 })}
+                        style={{ ...inlineInputStyle, width: '60px' }}
+                      />
+                    </td>
+                    <td style={{ padding: '8px', textAlign: 'left' }}>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                          onClick={() => {
+                            if (!newItem.name || !newItem.sku) return;
+                            onAddItem(office.id, { ...newItem, id: `item-${Date.now()}` });
+                            setNewItem({ name: '', sku: '', count: 1 });
+                            setIsAdding(false);
+                          }}
+                          style={{ color: 'var(--success)', padding: '4px 8px', borderRadius: '6px' }}
+                          title="שמור"
+                        >
+                          <Check size={18} />
+                        </button>
+                        <button 
+                          onClick={() => setIsAdding(false)}
+                          style={{ color: 'var(--danger)', padding: '4px 8px', borderRadius: '6px' }}
+                          title="ביטול"
+                        >
+                          <X size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
 
           {isAdmin && !isAdding && (
-            <button 
-              onClick={() => setIsAdding(true)}
-              style={{
-                width: '100%',
-                padding: '12px',
-                marginTop: '16px',
-                border: '1px dashed var(--border)',
-                borderRadius: '8px',
-                color: 'var(--accent)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                fontSize: '0.9rem',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              <Plus size={16} />
-              הוסף פריט למשרד
-            </button>
+            <div style={{ padding: '0 24px' }}>
+              <button 
+                onClick={() => setIsAdding(true)}
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  marginTop: '16px',
+                  border: '1px dashed var(--border)',
+                  borderRadius: '8px',
+                  color: 'var(--accent)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                <Plus size={16} />
+                הוסף פריט למשרד
+              </button>
+            </div>
           )}
         </div>
       )}

@@ -41,7 +41,9 @@
 }
 
 /* Smooth theme transitions on every element */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   transition: background-color 0.25s ease, border-color 0.25s ease, color 0.15s ease,
     box-shadow 0.25s ease;
 }
@@ -50,6 +52,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 body {
@@ -106,6 +113,7 @@ input {
   grid-template-rows: 72px 1fr;
   height: 100vh;
   width: 100vw;
+  background-color: var(--bg-primary);
 }
 
 .navbar {
@@ -144,8 +152,15 @@ input {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tree-row:hover {
@@ -269,13 +284,25 @@ input {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .btn-primary {
@@ -293,6 +320,14 @@ input {
   padding: 14px 24px;
   border-radius: 12px;
   font-weight: 600;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .sortable-item {
@@ -332,7 +367,10 @@ td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   letter-spacing: -0.02em;
   color: var(--text-primary);
 }
@@ -503,8 +541,143 @@ h1, h2, h3, h4 {
   backdrop-filter: blur(10px);
 }
 
+.dashboard-table-wrapper {
+  max-height: clamp(600px, calc(100vh - 350px), 1300px); /* 1300px ~ 20 lines max */
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.dashboard-table-wrapper th {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg-secondary);
+}
+
+.dashboard-table-wrapper th::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.office-table-wrapper {
+  max-height: clamp(300px, 50vh, 1000px); /* Effectively caps near 20 rows specific to office items */
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.office-table-wrapper th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg-surface);
+}
+
+.office-table-wrapper th::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--border);
+}
+
 .hover-row:hover {
   background: var(--bg-hover) !important;
+}
+
+/* Timeline Components */
+.activity-timeline-container {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  max-height: clamp(600px, calc(100vh - 350px), 1300px);
+  overflow-y: auto;
+}
+
+.timeline-header {
+  font-size: 1.15rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+
+.timeline-list::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 0;
+  right: 19px;
+  width: 2px;
+  background: var(--border);
+  opacity: 0.6;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 4px solid var(--bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.timeline-content {
+  flex: 1;
+  background: var(--bg-secondary);
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.timeline-content:hover {
+  border-color: var(--border-hover);
+  transform: translateX(-4px);
+}
+
+.timeline-time {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.timeline-manager {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
 }
 
 .expanded-details {
@@ -544,13 +717,168 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 900px) {
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .navbar {
+    height: 72px;
+    flex-shrink: 0;
+  }
+
+  .sidebar {
+    max-height: 35vh;
+    border-bottom: 1px solid var(--border);
+    border-left: transparent;
+  }
+
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+  }
+
   .dashboard-hero,
   .admin-search-container {
     flex-direction: column;
     align-items: stretch;
+    gap: 16px;
   }
 
   .dashboard-admin-btn {
     justify-content: center;
   }
+
+  .dashboard-manager-chip {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Minimal modern hover effects for raw inline icon buttons */
+button:not([class]) {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:not([class]):hover,
+.edit-item-btn:hover {
+  background-color: var(--bg-hover);
+  border-radius: 8px;
+}
+
+button:not([class]):active,
+.edit-item-btn:active {
+  opacity: 0.6;
+}
+
+td button[title="שמור"]:hover {
+  background-color: rgba(16, 185, 129, 0.1) !important;
+  color: var(--success) !important;
+}
+
+td button[title="ביטול"]:hover,
+td button[title="מחק"]:hover {
+  background-color: rgba(239, 68, 68, 0.1) !important;
+  color: var(--danger) !important;
+}
+
+/* Custom Day/Night Toggle Switch */
+.apple-toggle {
+  width: 50px;
+  height: 30px;
+  border-radius: 30px;
+  background: #64C5FF; /* Light mode sky blue */
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  direction: ltr;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.apple-toggle.active {
+  background: #1B2138; /* Dark mode night sky */
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Light mode Clouds */
+.apple-toggle::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 32px;
+  width: 14px;
+  height: 14px;
+  background-image: url('https://api.iconify.design/ph/cloud-fill.svg?color=white');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 0.4s ease;
+  pointer-events: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+}
+
+/* Dark mode Stars */
+.apple-toggle::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all 0.4s ease;
+  box-shadow: 
+    8px 16px 0 0 white,
+    14px 4px 0 0.5px white,
+    4px 10px 0 -0.5px white,
+    10px -2px 0 -0.2px white,
+    18px 14px 0 -0.5px white,
+    16px 2px 0 -0.5px white,
+    2px 14px 0 0.5px white,
+    -2px 6px 0 -0.3px white,
+    12px 18px 0 -0.8px white,
+    -2px 18px 0 0 white;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+/* Active (Dark Mode) states for clouds and stars */
+.apple-toggle.active::before {
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.apple-toggle.active::after {
+  opacity: 0.9;
+  transform: translateY(0);
+}
+
+.toggle-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 1px rgba(0,0,0,0.1);
+  position: absolute;
+  left: 2px;
+  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.apple-toggle.active .toggle-thumb {
+  left: 22px;
+  background-color: #F8F9FA;
 }
