@@ -1,24 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Search, Package, Settings, Moon, Sun, UserPlus, LayoutDashboard, Database } from 'lucide-react';
+import React from 'react';
+import { Search, Package, Moon, Sun, LayoutDashboard, Database } from 'lucide-react';
 
-const Navbar = ({ onSearch, onSearchCommit, role, toggleRole, darkMode, toggleDarkMode, onAddAdmin, currentView, setView }) => {
-  const [showSettings, setShowSettings] = useState(false);
-  const settingsRef = useRef(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (settingsRef.current && !settingsRef.current.contains(event.target)) {
-        setShowSettings(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
+const Navbar = ({ onSearch, onSearchCommit, role, toggleRole, darkMode, toggleDarkMode, currentView, setView, onGoHome }) => {
   return (
     <nav className="navbar">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <button
+        type="button"
+        className="home-button"
+        onClick={onGoHome}
+        title="חזרה לעמוד הבית"
+        style={{ display: 'flex', alignItems: 'center', gap: '12px' }}
+      >
         <div style={{ 
           background: 'var(--accent)', 
           padding: '8px', 
@@ -31,7 +23,7 @@ const Navbar = ({ onSearch, onSearchCommit, role, toggleRole, darkMode, toggleDa
         <h1 style={{ fontSize: '1.5rem', fontWeight: '800', letterSpacing: '-0.5px' }}>
           StockTree
         </h1>
-      </div>
+      </button>
 
       {role === 'admin' && (
         <div style={{ 
@@ -124,26 +116,6 @@ const Navbar = ({ onSearch, onSearchCommit, role, toggleRole, darkMode, toggleDa
         >
           {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
-
-        {/* Settings Dropdown */}
-        <div style={{ position: 'relative' }} ref={settingsRef}>
-          <button 
-            className={`nav-icon-btn ${showSettings ? 'active' : ''}`}
-            onClick={() => setShowSettings(!showSettings)}
-          >
-            <Settings size={20} />
-          </button>
-          
-          {showSettings && (
-            <div className="dropdown-menu">
-              <div className="dropdown-header">הגדרות מערכת</div>
-              <button className="dropdown-item" onClick={() => { onAddAdmin(); setShowSettings(false); }}>
-                <UserPlus size={16} />
-                <span>הוסף מנהל מערכת חדש</span>
-              </button>
-            </div>
-          )}
-        </div>
       </div>
     </nav>
   );

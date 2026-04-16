@@ -29,11 +29,21 @@ function App() {
     }
   }, [darkMode]);
 
+  useEffect(() => {
+    if (role !== 'admin' && currentView === 'dashboard') {
+      setCurrentView('tree');
+    }
+  }, [role, currentView]);
+
   const toggleDarkMode = () => setDarkMode(!darkMode);
 
   const handleAddAdmin = () => {
     // Placeholder for adding admin logic
     alert('פתיחת ממשק להוספת מנהל מערכת חדש...');
+  };
+
+  const handleGoHome = () => {
+    setCurrentView('tree');
   };
 
   const handleSearch = (query) => {
@@ -143,12 +153,12 @@ function App() {
         toggleRole={toggleRole}
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
-        onAddAdmin={handleAddAdmin}
         currentView={currentView}
         setView={setCurrentView}
+        onGoHome={handleGoHome}
       />
       
-      {currentView === 'tree' ? (
+      {currentView !== 'dashboard' || role !== 'admin' ? (
         <>
           <Sidebar 
             data={displayTree} 
@@ -172,8 +182,11 @@ function App() {
           </main>
         </>
       ) : (
-        <main className="main-content" style={{ marginRight: 0, width: '100%', padding: '40px' }}>
-          <AdminDashboard treeData={treeData} />
+        <main
+          className="main-content"
+          style={{ gridColumn: '1 / -1', width: '100%', padding: '40px' }}
+        >
+          <AdminDashboard treeData={treeData} onManageAdmins={handleAddAdmin} />
         </main>
       )}
 

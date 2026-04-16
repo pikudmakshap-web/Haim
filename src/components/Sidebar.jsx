@@ -37,7 +37,7 @@ const TreeNode = ({ node, level = 0, onSelect, selectedId, expandedPaths = [], i
         style={{
           display: 'flex',
           alignItems: 'center',
-          padding: '8px 12px',
+          padding: '10px 12px',
           borderRadius: '8px',
           cursor: 'pointer',
           transition: 'all 0.2s ease',
@@ -67,8 +67,8 @@ const TreeNode = ({ node, level = 0, onSelect, selectedId, expandedPaths = [], i
             <LayoutGrid size={16} style={{ flexShrink: 0 }} />
           )}
           <span style={{
-            fontSize: '0.9rem',
-            fontWeight: isManager ? '600' : '400',
+            fontSize: '1.02rem',
+            fontWeight: isManager ? '700' : '500',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -128,7 +128,7 @@ const Sidebar = ({ data, onSelectManager, selectedManagerId, expandedPaths, isAd
   return (
     <aside className="sidebar">
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+        <h2 style={{ fontSize: '0.95rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: '700' }}>
           ניהול היררכי
         </h2>
       </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
-import { ChevronDown, ChevronUp, MoreVertical, Plus, Package, Check, X } from 'lucide-react';
+import { ChevronDown, Plus, Package, Check, X } from 'lucide-react';
 
 const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -51,15 +51,7 @@ const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {isAdmin && (
-            <button
-              onClick={e => e.stopPropagation()}
-              style={{ color: 'var(--text-muted)' }}
-            >
-              <MoreVertical size={18} />
-            </button>
-          )}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{
             color: 'var(--text-muted)',
             transition: 'transform 0.25s ease',

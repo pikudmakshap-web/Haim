@@ -251,7 +251,7 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
             <h1 style={{ fontSize: '2rem', fontWeight: '800' }}>ניהול מלאי: {manager.name}</h1>
             <p style={{ color: 'var(--text-secondary)' }}>צפייה ועריכת פריטי מלאי לפי משרדים</p>
           </div>
-          <div style={{ display: 'flex', gap: '12px', position: 'relative' }} ref={sortRef}>
+          <div style={{ display: 'flex', gap: '12px' }}>
             {/* Office Search */}
             <div style={{ 
               position: 'relative',
@@ -285,28 +285,33 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [] 
               />
             </div>
 
-            <button 
-              onClick={() => setShowSortOptions(!showSortOptions)}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '10px 20px', borderRadius: '10px',
-                border: '1px solid var(--border)', color: 'var(--text-primary)',
-                background: 'var(--bg-secondary)',
-                cursor: 'pointer'
-              }}
-            >
-              <Filter size={18} />
-              מיון
-            </button>
+            <div style={{ position: 'relative' }} ref={sortRef}>
+              <button 
+                onClick={() => setShowSortOptions(!showSortOptions)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '8px',
+                  padding: '10px 20px', borderRadius: '10px',
+                  border: '1px solid var(--border)', color: 'var(--text-primary)',
+                  background: 'var(--bg-secondary)',
+                  cursor: 'pointer'
+                }}
+              >
+                <Filter size={18} />
+                מיון
+              </button>
 
-            {showSortOptions && (
-              <div className="dropdown-menu" style={{ left: 'auto', right: 0, width: '180px' }}>
-                <div className="dropdown-header">מיין לפי</div>
-                <button className="dropdown-item" onClick={() => handleSort('name')}>שם מוצר (א-ת)</button>
-                <button className="dropdown-item" onClick={() => handleSort('sku')}>מק"ט</button>
-                <button className="dropdown-item" onClick={() => handleSort('count')}>כמות (מהגבוה לנמוך)</button>
-              </div>
-            )}
+              {showSortOptions && (
+                <div
+                  className="dropdown-menu"
+                  style={{ top: 'calc(100% + 8px)', left: 'auto', right: 0, width: '220px' }}
+                >
+                  <div className="dropdown-header">מיין לפי</div>
+                  <button className="dropdown-item" onClick={() => handleSort('name')}>שם מוצר (א-ת)</button>
+                  <button className="dropdown-item" onClick={() => handleSort('sku')}>מק"ט</button>
+                  <button className="dropdown-item" onClick={() => handleSort('count')}>כמות (מהגבוה לנמוך)</button>
+                </div>
+              )}
+            </div>
 
             <button 
               onClick={handleExport}

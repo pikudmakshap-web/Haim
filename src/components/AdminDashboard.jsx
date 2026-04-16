@@ -8,22 +8,27 @@ import {
   ChevronDown, 
   ChevronUp,
   LayoutGrid,
-  BarChart3
+  BarChart3,
+  UserPlus
 } from 'lucide-react';
 import { getManagers } from '../utils/treeUtils';
 
-const AdminDashboard = ({ treeData }) => {
+const AdminDashboard = ({ treeData, onManageAdmins }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedSku, setExpandedSku] = useState(null);
 
   // 1. Aggregate Statistics & Inventory
   const { stats, globalInventory } = useMemo(() => {
     const allManagers = getManagers(treeData);
+    const uniqueManagers = new Map();
     const inventoryMap = {};
     let totalItemsCount = 0;
     let totalOfficesCount = 0;
 
     allManagers.forEach(manager => {
+      if (!uniqueManagers.has(manager.id)) {
+        uniqueManagers.set(manager.id, manager.name);
+      }
       totalOfficesCount += manager.offices?.length || 0;
       
       manager.offices?.forEach(office => {
@@ -35,18 +40,18 @@ const AdminDashboard = ({ treeData }) => {
               sku: item.sku,
               name: item.name,
               totalCount: 0,
-              holdingManagers: [] // { name, count }
+              holdingManagers: [] // { id, name, count }
             };
           }
           
           inventoryMap[item.sku].totalCount += item.count;
           
           // Track which manager holds this item
-          const existingMan = inventoryMap[item.sku].holdingManagers.find(m => m.name === manager.name);
+          const existingMan = inventoryMap[item.sku].holdingManagers.find(m => m.id === manager.id);
           if (existingMan) {
             existingMan.count += item.count;
           } else {
-            inventoryMap[item.sku].holdingManagers.push({ name: manager.name, count: item.count });
+            inventoryMap[item.sku].holdingManagers.push({ id: manager.id, name: manager.name, count: item.count });
           }
         });
       });
@@ -54,12 +59,17 @@ const AdminDashboard = ({ treeData }) => {
 
     return {
       stats: {
-        totalManagers: allManagers.length,
+        totalManagers: uniqueManagers.size,
         totalOffices: totalOfficesCount,
         totalItems: totalItemsCount,
         uniqueProducts: Object.keys(inventoryMap).length
       },
-      globalInventory: Object.values(inventoryMap).sort((a, b) => b.totalCount - a.totalCount)
+      globalInventory: Object.values(inventoryMap)
+        .map(item => ({
+          ...item,
+          holdingManagers: item.holdingManagers.sort((a, b) => b.count - a.count),
+        }))
+        .sort((a, b) => b.totalCount - a.totalCount)
     };
   }, [treeData]);
 
@@ -75,11 +85,18 @@ const AdminDashboard = ({ treeData }) => {
 
   return (
     <div className="dashboard-page animate-fade">
-      <div style={{ marginBottom: '40px' }}>
-        <h1 style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-1px' }}>לוח בקרת מלאי</h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '4px' }}>
-          מבט גלובלי וריכוז נתונים מכלל מנהלי המלאי והמשרדים בארגון
-        </p>
+      <div className="dashboard-hero">
+        <div>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-1px' }}>לוח בקרת מלאי</h1>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginTop: '4px' }}>
+            מבט גלובלי וריכוז נתונים מכלל מנהלי המלאי והמשרדים בארגון
+          </p>
+        </div>
+
+        <button type="button" className="dashboard-admin-btn" onClick={onManageAdmins}>
+          <UserPlus size={18} />
+          ניהול מנהלים
+        </button>
       </div>
 
       {/* Stats Grid */}
@@ -195,15 +212,7 @@ const AdminDashboard = ({ treeData }) => {
                           </h4>
                           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
                             {item.holdingManagers.map((man, idx) => (
-                              <div key={idx} style={{ 
-                                display: 'flex', 
-                                justifyContent: 'space-between', 
-                                padding: '12px 20px', 
-                                background: 'var(--bg-surface)', 
-                                borderRadius: '12px',
-                                border: '1px solid var(--border)',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
-                              }}>
+                              <div key={idx} className="dashboard-manager-chip">
                                 <span style={{ fontWeight: '600' }}>{man.name}</span>
                                 <span style={{ color: 'var(--accent)', fontWeight: '900', fontSize: '1.1rem' }}>{man.count}</span>
                               </div>

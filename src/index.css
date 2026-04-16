@@ -126,6 +126,16 @@ input {
   padding: 24px 16px;
 }
 
+.home-button {
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 6px 10px;
+}
+
+.home-button:hover {
+  background: var(--bg-hover);
+}
+
 .main-content {
   background: var(--bg-primary);
   overflow-y: auto;
@@ -438,6 +448,34 @@ h1, h2, h3, h4 {
   margin: 0 auto;
 }
 
+.dashboard-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+.dashboard-admin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  box-shadow: var(--shadow);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.dashboard-admin-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--bg-hover);
+}
+
 .stat-card {
   background: var(--bg-surface);
   padding: 24px;
@@ -452,7 +490,7 @@ h1, h2, h3, h4 {
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   border-color: var(--accent);
 }
 
@@ -478,6 +516,16 @@ h1, h2, h3, h4 {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.dashboard-manager-chip {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
 .admin-search-container {
   background: var(--bg-hover);
   border-bottom: 1px solid var(--border);
@@ -485,4 +533,24 @@ h1, h2, h3, h4 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+:root.dark .dashboard-table-container {
+  backdrop-filter: none;
+}
+
+:root.dark .expanded-details {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+@media (max-width: 900px) {
+  .dashboard-hero,
+  .admin-search-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-admin-btn {
+    justify-content: center;
+  }
 }
