@@ -17,6 +17,7 @@ import {
   Clock
 } from 'lucide-react';
 import { getManagers } from '../utils/treeUtils';
+import ScrollableTableContainer from './ScrollableTableContainer';
 
 const AdminDashboard = ({ treeData, onManageAdmins, activityLog = [] }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -162,7 +163,7 @@ const AdminDashboard = ({ treeData, onManageAdmins, activityLog = [] }) => {
           </div>
         </div>
 
-        <div className="dashboard-table-wrapper">
+        <ScrollableTableContainer className="dashboard-table-wrapper" style={{ flexGrow: 1, height: '100%' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
             <thead>
               <tr style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
@@ -239,7 +240,7 @@ const AdminDashboard = ({ treeData, onManageAdmins, activityLog = [] }) => {
               )}
             </tbody>
           </table>
-        </div>
+        </ScrollableTableContainer>
       </div>
 
       {/* Activity Timeline (Right Column) */}

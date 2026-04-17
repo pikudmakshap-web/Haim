@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, UserPlus, Trash2, Mail, Users, Shield } from 'lucide-react';
+import ScrollableTableContainer from './ScrollableTableContainer';
 
 const ManageAdminsModal = ({ isOpen, onClose, systemAdmins, onAddAdmin, onRemoveAdmin }) => {
   const [newAdmin, setNewAdmin] = useState({ name: '', email: '', role: 'Admin' });
@@ -48,7 +49,7 @@ const ManageAdminsModal = ({ isOpen, onClose, systemAdmins, onAddAdmin, onRemove
               מנהלים קיימים
             </h3>
             
-            <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+            <ScrollableTableContainer maxHeight="300px" style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
                 <thead>
                   <tr style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
@@ -95,7 +96,7 @@ const ManageAdminsModal = ({ isOpen, onClose, systemAdmins, onAddAdmin, onRemove
                   )}
                 </tbody>
               </table>
-            </div>
+            </ScrollableTableContainer>
           </div>
 
           <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '0 -24px 24px' }} />

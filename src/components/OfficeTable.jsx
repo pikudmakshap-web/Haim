@@ -3,6 +3,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { SortableItem } from './SortableItem';
 import { ChevronDown, Plus, Package, Check, X } from 'lucide-react';
+import ScrollableTableContainer from './ScrollableTableContainer';
 
 const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -65,7 +66,7 @@ const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
       {/* Collapsible body */}
       {isOpen && (
         <div style={{ paddingBottom: '16px' }}>
-          <div className="office-table-wrapper" style={{ padding: '0 24px' }}>
+          <ScrollableTableContainer className="office-table-wrapper" style={{ padding: '0 24px' }} maxHeight="400px">
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
               <thead>
                 <tr style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
@@ -142,7 +143,7 @@ const OfficeTable = ({ office, isAdmin, onEditItem, onAddItem }) => {
                 )}
               </tbody>
             </table>
-          </div>
+          </ScrollableTableContainer>
 
           {isAdmin && !isAdding && (
             <div style={{ padding: '0 24px' }}>

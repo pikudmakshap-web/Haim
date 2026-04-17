@@ -16,6 +16,7 @@ import {
 import { closestCorners } from '@dnd-kit/core';
 import OfficeTable from './OfficeTable';
 import MoveItemModal from './MoveItemModal';
+import ScrollableTableContainer from './ScrollableTableContainer';
 import { ChevronRight, FileOutput, Filter, PlusCircle, Search, LayoutGrid, CheckCircle2 } from 'lucide-react';
 
 const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [], onLogActivity }) => {
@@ -362,15 +363,16 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [],
           </span>
         </div>
         
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
-          <thead>
-            <tr style={{ color: 'var(--text-muted)', fontSize: '0.8rem', borderBottom: '1px solid var(--border)' }}>
-              <th style={{ padding: '12px 8px', fontWeight: '500' }}>מק&quot;ט</th>
-              <th style={{ padding: '12px 8px', fontWeight: '500' }}>שם מוצר</th>
-              <th style={{ padding: '12px 8px', fontWeight: '500' }}>סה&quot;כ כמות</th>
-            </tr>
-          </thead>
-          <tbody>
+        <ScrollableTableContainer maxHeight="350px">
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
+            <thead>
+              <tr style={{ color: 'var(--text-muted)', fontSize: '0.8rem', borderBottom: '1px solid var(--border)' }}>
+                <th style={{ padding: '12px 8px', fontWeight: '500' }}>מק&quot;ט</th>
+                <th style={{ padding: '12px 8px', fontWeight: '500' }}>שם מוצר</th>
+                <th style={{ padding: '12px 8px', fontWeight: '500' }}>סה&quot;כ כמות</th>
+              </tr>
+            </thead>
+            <tbody>
             {aggregatedTotals.length > 0 ? aggregatedTotals.map((item) => (
               <tr key={item.sku} style={{ borderBottom: '1px solid var(--border)', opacity: 0.9 }}>
                 <td style={{ padding: '12px 8px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>{item.sku}</td>
@@ -387,7 +389,8 @@ const InventoryManager = ({ manager, isAdmin, onUpdateManager, breadcrumbs = [],
               </tr>
             )}
           </tbody>
-        </table>
+          </table>
+        </ScrollableTableContainer>
       </div>
 
         <DndContext 
